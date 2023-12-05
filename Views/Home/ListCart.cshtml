@@ -1,0 +1,100 @@
+﻿@{
+	ViewData["Title"] = "ListCart";
+	Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<style>
+		.td, th {
+			padding: 20px;
+		}
+	.button-container {
+		display: inline-block;
+	}
+
+	.circle-button {
+		width: 30px;
+		height: 30px;
+		border-radius: 50%;
+		border: none;
+		color: white;
+		font-size: 18px;
+		cursor: pointer;
+		outline: none;
+		margin: 5px;
+		display: inline-block;
+	}
+
+	.green-button {
+		background-color: green;
+	}
+
+	.red-button {
+		background-color: red;
+	}
+	}
+
+</style>
+<script src="~/js/jquery.min.js"></script>
+<script>
+	$(document).ready(function() {
+		$(".updateCart").click(function(event) {
+			event.preventDefault();
+			var quantity = $(".quantity_" + $(this).attr("data-id")).val();
+			console.log(quantity);
+			$.ajax({
+				type: "POST",
+				url: "@Url.Action("updateCart","Book")",
+				data: {
+					id: $(this).attr("data-id"),
+					quantity: quantity
+				},
+				success: function(result) {
+					window.location.href = '@Url.Action("ListCart","Book")';
+				}
+			});
+		});
+	});
+</script>
+
+<div class="List-cart">
+	<table>
+		<tr>
+			<th>No</th>
+			<th>Image</th>
+			<th>Title</th>
+			<th>Quantity</th>
+			<th>Price</th>
+			<th>Total</th>
+			<th>Update</th>
+			<th>Delete</th>
+		</tr>
+		@{
+			int counter = 0;
+			foreach (var item in ViewBag.carts)
+			{
+				string txt_class = "quantity_" + item.Book.BookID;
+				decimal total = item.Book.Price * item.Quantity;
+				counter++;
+				<tr>
+					<td>@counter</td>
+					<td><img src="@item.Book.UrlImage" width="100" height="100" /></td>
+					<td>@item.Book.Title</td>
+					<td><input type="number" class="@txt_class" value="@item.Quantity" /></td>
+					<td>@item.Book.Price</td>
+					<td>@total</td>
+					<td>
+						<div class="button-container">
+							<form asp-controller="Home" asp-action="AddMore" asp-route-id="@item.Book.BookID" method="post">
+								<button class="circle-button green-button" type="submit">+</button>
+							</form>
+							<form asp-controller="Home" asp-action="ReduceOne" asp-route-id="@item.Book.BookID" method="post">
+								<button class="circle-button red-button" type="submit">-</button>
+							</form>
+						</div>
+					</td>
+					<td><a asp-controller="Home" asp-action="DeleteCart" asp-route-id="@item.Book.BookID">Delete</a></td>
+				</tr>
+			}
+		}
+	</table>
+</div>

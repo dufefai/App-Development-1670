@@ -1,0 +1,68 @@
+﻿@model App_Development_1670.Models.BookCategoryViewModel
+
+@{
+	ViewData["Title"] = "Home Page";
+}
+<style>
+
+	.content-container {
+		display: flex;
+		flex-direction: column;
+		flex: 1;
+		margin-left: 75px;
+		margin-top: 50px;
+		margin-bottom: 50px;
+	}
+
+	.item {
+		margin-top: 50px;
+		display: inline-block;
+		margin-left: 75px;
+	}
+
+	.horizontal-line {
+		border-top: 1px solid black;
+		width: 100%;
+		margin: 20px 0;
+	}
+
+</style>
+
+<form asp-controller="Home" asp-action="Index" method="get">
+	<p>
+
+		<select asp-for="BookCategory" asp-items="Model.Categories">
+			<option value="">All</option>
+		</select>
+
+		Title: <input type="text" asp-for="SearchString" />
+		<input type="submit" value="Filter" />
+	</p>
+</form>
+<div class="text-center">
+	@if (User.IsInRole("Admin") || User.IsInRole("Mod"))
+	{
+		<h1 class="display-4">Welcome Store Owner</h1>
+	}
+	else
+	{
+		<h1 class="display-4">Welcome Customer</h1>
+	}
+	<p class="horizontal-line"></p>
+</div>
+
+
+<div class="content-container">
+	<div class="category">
+		@foreach (var item in Model.Books!)
+		{
+			<div class="item">
+				<img src="@Html.DisplayFor(modelItem => item.UrlImage)" width="200" height="300">
+				<p style="text-align: center;">@Html.DisplayFor(modelItem => item.Title)</p>
+				<p style="text-align: center;"><b>Price:</b> @Html.DisplayFor(modelItem => item.Price)$</p>
+				<p style="text-align: center;"><b>Author:</b> <a asp-controller="Home" asp-action="Index" asp-route-authorName="@item.Author">@Html.DisplayFor(modelItem => item.Author)</a></p>
+				<p style="text-align: center;"><a asp-controller="Home" asp-action="AddCart" asp-route-id="@item.BookID" class="btn btn-primary">Add to Cart</a></p>
+			</div>
+		}
+	</div>
+</div>
