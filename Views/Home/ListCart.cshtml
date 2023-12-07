@@ -4,9 +4,10 @@
 }
 
 <style>
-		.td, th {
-			padding: 20px;
+		th, td {
+			padding: 30px;
 		}
+
 	.button-container {
 		display: inline-block;
 	}
@@ -35,6 +36,7 @@
 
 </style>
 <script src="~/js/jquery.min.js"></script>
+<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
 <script>
 	$(document).ready(function() {
 		$(".updateCart").click(function(event) {
@@ -75,26 +77,51 @@
 				string txt_class = "quantity_" + item.Book.BookID;
 				decimal total = item.Book.Price * item.Quantity;
 				counter++;
-				<tr>
-					<td>@counter</td>
-					<td><img src="@item.Book.UrlImage" width="100" height="100" /></td>
-					<td>@item.Book.Title</td>
-					<td><input type="number" class="@txt_class" value="@item.Quantity" /></td>
-					<td>@item.Book.Price</td>
-					<td>@total</td>
-					<td>
-						<div class="button-container">
-							<form asp-controller="Home" asp-action="AddMore" asp-route-id="@item.Book.BookID" method="post">
-								<button class="circle-button green-button" type="submit">+</button>
-							</form>
-							<form asp-controller="Home" asp-action="ReduceOne" asp-route-id="@item.Book.BookID" method="post">
-								<button class="circle-button red-button" type="submit">-</button>
-							</form>
-						</div>
-					</td>
-					<td><a asp-controller="Home" asp-action="DeleteCart" asp-route-id="@item.Book.BookID">Delete</a></td>
-				</tr>
+							<tr>
+								<td>@counter</td>
+								<td><img src="@item.Book.UrlImage" width="100" height="100" /></td>
+								<td>@item.Book.Title</td>
+								<td><input type="number" class="@txt_class" value="@item.Quantity" /></td>
+								<td>@item.Book.Price</td>
+								<td>@total</td>
+								<td>
+									<div class="button-container">
+										<form asp-controller="Home" asp-action="AddMore" asp-route-id="@item.Book.BookID" method="post">
+											<button class="circle-button green-button" type="submit">+</button>
+										</form>
+										<form asp-controller="Home" asp-action="ReduceOne" asp-route-id="@item.Book.BookID" method="post">
+											<button class="circle-button red-button" type="submit">-</button>
+										</form>
+									</div>
+								</td>
+								<td><a asp-controller="Home" asp-action="DeleteCart" asp-route-id="@item.Book.BookID">Delete</a></td>
+							</tr>
 			}
 		}
 	</table>
 </div>
+<div>
+    <a id="orderNow" href="@Url.Action("CreateOrder", "Orders")" class="btn btn-success">Order Now</a>
+</div>
+
+
+<script>
+    $(document).ready(function () {
+        console.log('Script executed'); 
+        $("#orderNow").click(function (event) {
+            event.preventDefault();
+
+            $.ajax({
+                type: "POST",
+                url: "/Orders/CreateOrder",
+                success: function () {
+                    window.location.href = '/Home/SuccessfullyOrder';
+                },
+                error: function () {
+                    alert('Error creating order');
+                }
+            });
+        });
+    });
+
+</script>

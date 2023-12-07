@@ -12,5 +12,7 @@ namespace App_Development_1670.Data
         }
         public DbSet<App_Development_1670.Models.Book>? Book { get; set; }
         public DbSet<App_Development_1670.Models.Category>? Category { get; set; }
+        public DbSet<Order> Orders { get; set; }
+        public DbSet<OrderItem> OrderItems { get; set; }
     }
 }
