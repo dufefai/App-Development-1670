@@ -5,6 +5,8 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 using System.Diagnostics;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Authorization;
 
 namespace App_Development_1670.Controllers
 {
@@ -12,11 +14,13 @@ namespace App_Development_1670.Controllers
     {
         private readonly ILogger<HomeController> _logger;
         private readonly ApplicationDbContext _context;
+        private readonly UserManager<IdentityUser> _userManager;
 
-        public HomeController(ILogger<HomeController> logger, ApplicationDbContext context)
+        public HomeController(ILogger<HomeController> logger, ApplicationDbContext context, UserManager<IdentityUser> userManager)
         {
-            _logger = logger;
+            this._logger = logger;
             this._context = context;
+            this._userManager = userManager;
         }
 
         public async Task<IActionResult> Index(string bookCategory, string searchString, string authorName)
@@ -51,8 +55,25 @@ namespace App_Development_1670.Controllers
 
             return View(bookCategoryVM);
         }
+        public async Task<IActionResult> Details(int? id)
+        {
+            if (id == null || _context.Book == null)
+            {
+                return NotFound();
+            }
 
-            public Book GetDetailProduct(int id)
+            var book = await _context.Book
+                .Include(b => b.Category)
+                .FirstOrDefaultAsync(m => m.BookID == id);
+            if (book == null)
+            {
+                return NotFound();
+            }
+
+            return View(book);
+        }
+
+        public Book GetDetailProduct(int id)
         {
             var books = _context.Book.Find(id);
             return books;
@@ -103,15 +124,15 @@ namespace App_Development_1670.Controllers
         {
             var cart = HttpContext.Session.GetString("cart");
 
-                List<Cart> dataCart = JsonConvert.DeserializeObject<List<Cart>>(cart);
-                for (int i = 0; i < dataCart.Count; i++)
+            List<Cart> dataCart = JsonConvert.DeserializeObject<List<Cart>>(cart);
+            for (int i = 0; i < dataCart.Count; i++)
+            {
+                if (dataCart[i].Book != null && dataCart[i].Book.BookID == id)
                 {
-                    if (dataCart[i].Book != null && dataCart[i].Book.BookID == id)
-                    {
-                        dataCart[i].Quantity++;
-                    }
+                    dataCart[i].Quantity++;
                 }
-                HttpContext.Session.SetString("cart", JsonConvert.SerializeObject(dataCart));
+            }
+            HttpContext.Session.SetString("cart", JsonConvert.SerializeObject(dataCart));
             return RedirectToAction("ListCart");
         }
         public IActionResult ReduceOne(int id)
@@ -122,8 +143,8 @@ namespace App_Development_1670.Controllers
             {
                 if (dataCart[i].Book != null && dataCart[i].Book.BookID == id)
                 {
-                    if(dataCart[i].Quantity>=2)
-                    dataCart[i].Quantity--;
+                    if (dataCart[i].Quantity >= 2)
+                        dataCart[i].Quantity--;
                     else
                     {
                         dataCart.RemoveAt(i);
@@ -211,6 +232,31 @@ namespace App_Development_1670.Controllers
         public IActionResult SuccessfullyOrder()
         {
             return View();
+        }
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> ViewUsers()
+        {
+            var users = await _userManager.Users.ToListAsync();
+
+            return View(users);
+        }
+        [Authorize]
+        public async Task<IActionResult> ViewOrder()
+        {
+            var user = await _userManager.GetUserAsync(User);
+            List<Order> userOrders = new List<Order>();
+
+            if (user != null)
+            {
+                var userId = user.Id;
+                userOrders = _context.Orders
+                    .Include(o => o.OrderItems)
+                        .ThenInclude(oi => oi.Book)
+                    .Where(o => o.UserId == userId)
+                    .ToList();
+            }
+
+            return View(userOrders);
         }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]

@@ -1,0 +1,38 @@
+﻿@model App_Development_1670.Models.Book
+
+@{
+    ViewData["Title"] = "Details";
+}
+
+<style>
+    .container1 {
+        width: 80%;
+        margin: 20px auto;
+        padding: 20px;
+        border: 1px solid #ccc;
+        overflow: hidden;
+    }
+    h1 {
+        margin-bottom: 10px;
+    }
+    p {
+        margin-bottom: 10px;
+    }
+    img {
+
+    }
+    .add-to-cart {
+        text-align: right;
+    }
+</style>
+
+<div class="container1">
+    <h1>@Model.Title</h1>
+    <img src="@Model.UrlImage" alt="Book Image" style="width:200px; height:300px; float: left; margin-right: 20px;" />
+    <div class="add-to-cart">
+        <p><strong>Author:</strong> @Model.Author</p>
+        <p><strong>Description:</strong> @Model.Description</p>
+        <p><strong>Price:</strong> $@Model.Price</p>
+        <p style="margin-top: 100px"><a asp-controller="Home" asp-action="AddCart" asp-route-id="@Model.BookID" class="btn btn-primary">Add to Cart</a></p>
+    </div>
+</div>

@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using App_Development_1670.Models;
+using Microsoft.AspNetCore.Identity;
 
 namespace App_Development_1670.Data
 {
@@ -14,5 +15,6 @@ namespace App_Development_1670.Data
         public DbSet<App_Development_1670.Models.Category>? Category { get; set; }
         public DbSet<Order> Orders { get; set; }
         public DbSet<OrderItem> OrderItems { get; set; }
+        public DbSet<IdentityUser> Users { get; set; }
     }
 }

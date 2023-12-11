@@ -1,0 +1,45 @@
+﻿@model List<Order>
+@{
+    ViewData["Title"] = "ViewOrder";
+}
+<h1>User Orders</h1>
+<style>
+    table {
+        border-collapse: collapse;
+        width: 100%;
+    }
+    
+    th, td {
+        padding: 8px 20px;
+        text-align: left;
+        border-bottom: 1px solid #ddd;
+    }
+
+    tr:nth-child(even) {
+        background-color: #f2f2f2;
+    }
+</style>
+
+@foreach (var order in Model)
+{
+    <h3>Order: @order.Id</h3>
+    <p>Order Date: @order.OrderDate</p>
+
+    <table>
+        <tr>
+            <th style="padding-left: 20px;">Book</th>
+            <th style="padding-left: 20px;">Name</th>
+            <th style="padding-left: 20px;">Quantity</th>
+            <th style="padding-left: 20px;">Price</th>
+        </tr>
+        @foreach (var item in order.OrderItems)
+        {
+            <tr>
+                <td>@item.Book.Title</td>
+                <td><img src="@item.Book.UrlImage" width="100" height="100" /></td>
+                <td>@item.Quantity</td>
+                <td>@item.Price$</td>
+            </tr>
+        }
+    </table>
+}

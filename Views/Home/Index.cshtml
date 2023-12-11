@@ -58,7 +58,7 @@
 		{
 			<div class="item">
 				<img src="@Html.DisplayFor(modelItem => item.UrlImage)" width="200" height="300">
-				<p style="text-align: center;">@Html.DisplayFor(modelItem => item.Title)</p>
+				<a asp-action="Details" asp-route-id="@item.BookID"><p style="text-align: center;">@Html.DisplayFor(modelItem => item.Title)</p></a>
 				<p style="text-align: center;"><b>Price:</b> @Html.DisplayFor(modelItem => item.Price)$</p>
 				<p style="text-align: center;"><b>Author:</b> <a asp-controller="Home" asp-action="Index" asp-route-authorName="@item.Author">@Html.DisplayFor(modelItem => item.Author)</a></p>
 				<p style="text-align: center;"><a asp-controller="Home" asp-action="AddCart" asp-route-id="@item.BookID" class="btn btn-primary">Add to Cart</a></p>

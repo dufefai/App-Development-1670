@@ -3,9 +3,11 @@ using Newtonsoft.Json;
 using App_Development_1670.Data;
 using Microsoft.AspNetCore.Identity;
 using App_Development_1670.Models;
+using Microsoft.AspNetCore.Authorization;
 
 namespace App_Development_1670.Controllers
 {
+    [Authorize]
     public class OrdersController : Controller
     {
         private readonly ApplicationDbContext _dbContext;
@@ -37,7 +39,7 @@ namespace App_Development_1670.Controllers
                         {
                             BookID = cartItem.Book.BookID,
                             Quantity = cartItem.Quantity,
-                            Price = cartItem.Book.Price
+                            Price = cartItem.Book.Price * (decimal)cartItem.Quantity
                         }).ToList()
                     };
 

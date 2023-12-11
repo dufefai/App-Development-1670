@@ -1,20 +1,20 @@
 ﻿@using Newtonsoft.Json
 @{
-    var data = Context.Session.GetString("cart");
-    int countCart = 0;
-    if (data == null)
-    {
-        countCart = 0;
-    }
-    else
-    {
-        var data2 = Context.Session.GetString("cart");
-        List<Cart> dataCart = JsonConvert.DeserializeObject<List<Cart>>(data2);
-        foreach (var item in dataCart)
-        {
-            countCart += item.Quantity;
-        }
-    }
+	var data = Context.Session.GetString("cart");
+	int countCart = 0;
+	if (data == null)
+	{
+		countCart = 0;
+	}
+	else
+	{
+		var data2 = Context.Session.GetString("cart");
+		List<Cart> dataCart = JsonConvert.DeserializeObject<List<Cart>>(data2);
+		foreach (var item in dataCart)
+		{
+			countCart += item.Quantity;
+		}
+	}
 }
 <!DOCTYPE html>
 <html lang="en">
@@ -51,15 +51,22 @@
 							<li class="nav-item">
 								<a class="nav-link text-dark" asp-area="" asp-controller="Categories" asp-action="">Category</a>
 							</li>
+
+						}
+						@if (User.IsInRole("Admin"))
+						{
+							<li class="nav-item">
+								<a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="ViewUsers">User</a>
+							</li>
 						}
 						<li class="nav-item">
-							<a class="nav-link text-dark" asp-area="" asp-controller="Admin" asp-action="User">Users</a>
-						</li>
-						<li class="nav-item">
 							<a class="nav-link text-dark" asp-controller="Home" asp-action="ListCart" , style="display:flex">
-								Cart <img src="https://www.svgrepo.com/download/9999/shopping-cart.svg" width=" 20" !important; height="20" />
+								<img src="https://www.svgrepo.com/download/9999/shopping-cart.svg" width=" 20" !important; height="20" />
 								@countCart
 							</a>
+						</li>
+						<li class="nav-item">
+							<a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="ViewOrder">Order</a>
 						</li>
 					</ul>
 					<partial name="_LoginPartial" />

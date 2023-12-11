@@ -7,9 +7,11 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using App_Development_1670.Data;
 using App_Development_1670.Models;
+using Microsoft.AspNetCore.Authorization;
 
 namespace App_Development_1670.Controllers
 {
+    [Authorize(Roles = "Admin, Mod")]
     public class BooksController : Controller
     {
         private readonly ApplicationDbContext _context;
